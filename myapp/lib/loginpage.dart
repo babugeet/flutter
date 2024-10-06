@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:dio/dio.dart';
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dio/dio.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,35 +37,71 @@ class _LoginPageState extends State<LoginPage> {
       );
       return;
     }
+  // var dio = Dio();
+  // dio.options.baseUrl = 'http://localhost:8080';
+//  var appDocDir = await getTemporaryDirectory();
+  // var cookieJar = PersistCookieJar(storage: FileStorage(appDocDir.path));
+    // dio.options.headers['Content-Type'] = 'application/json';
+//  dio.interceptors.add(CookieManager(cookieJar));  
 
     try {
       final response = await http.post(
         Uri.parse('http://localhost:8080/login'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
+          'Accept': 'application/json',
         },
         body: jsonEncode(<String, String>{
           'username': username,
           'password': password,
         }),
       );
+
+
+    //       Response response = await dio.post(
+    //   '/login',
+    //   data: {
+    //     'username': 'your_username',
+    //     'password': 'your_password',
+    //   },
+    //   options: Options(
+    //     followRedirects: false,
+    //     validateStatus: (status) {
+    //       return status! < 500; // Allow status code < 500
+    //     },
+    //         headers: {
+    //     'Content-Type': 'application/json',
+    //     'Accept': 'application/json',
+    //   },
+    //   ),
+    // );
+  //    var cookies = await cookieJar.loadForRequest(Uri.parse('http://localhost:8080/login'));
+  // print(cookies); // This will show the Set-Cookie header
        // Print response details for debugging
     print('Response status: ${response.statusCode}');
     print('Response headers: ${response.headers}');
-    print('Response body: ${response.body}');
-    print('test:${response.headers['Set-Cookie']}');
-
+    // print('Response body: ${response.body}');
+    print('test:${response.body}');
       if (response.statusCode == 200) {
+        Map<String, dynamic> responseData = jsonDecode(response.body);
+        String token = responseData['token'];
+        // String username1 = '$username'; 
         // Successful login
         // Save the cookies returned in the response
-         String? setCookieHeader = response.headers['set-cookie'];
+        //  String? setCookieHeader = response.headers['set-cookie'];
 
         // Define a manual cookie value if needed
-        String manualCookie = 'token=your_manual_token_value,username=$username';
+
+
+        // String manualCookie = 'token1=${response.body},userna1me=$username';
+
 
         // Store the cookie in SharedPreferences
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', setCookieHeader ?? manualCookie);
+        var setCookieHeader;
+        await prefs.setString('token1', token);
+  await prefs.setString('userna1me', username);
+        // await prefs.setString('token1', setCookieHeader ?? manualCookie);
         // print('Cookie stored: ${setCookieHeader ?? manualCookie}');
 
         // Navigate to the dashboard

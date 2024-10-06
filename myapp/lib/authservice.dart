@@ -3,7 +3,7 @@ import 'dart:html';
 class AuthService {
   Future<bool> isUserSignedIn() async {
     // Check if the session token exists in Local Storage
-    String? token = window.localStorage['flutter.token']; // Retrieve the token from Local Storage
+    String? token = window.localStorage['flutter.token1']; // Retrieve the token from Local Storage
     return token != null; // Return true if the token exists, false otherwise
 
     // #TODO, to check time and mark expiry
@@ -11,7 +11,7 @@ class AuthService {
 
   Future<void> logout() async {
     // Clear the token from Local Storage on logout
-    window.localStorage.remove('flutter.token'); // Clear stored session token
+    window.localStorage.remove('flutter.token1'); // Clear stored session token
   }
 
   Future<bool> isKeyExists(String key) async {
