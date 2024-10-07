@@ -8,109 +8,115 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Profile'),
-        backgroundColor: Colors.blueAccent,
-      ),
+      // appBar: AppBar(
+      //   title: Text('Profile'),
+      //   backgroundColor: Colors.blueAccent,
+      // ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _buildProfileHeader(),
-            SizedBox(height: 20),
-            _buildPersonalDetails(),
-            SizedBox(height: 20),
+            // _buildProfileHeader(),
+            // SizedBox(height: 20),
+            // _buildPersonalDetails(),
+            // SizedBox(height: 20),
             _buildBodyMetrics(),
             SizedBox(height: 20),
-            _buildAchievements(),
+            _buildWaterIntake(),
+ SizedBox(height: 20),
+ _buildWorkoutStatus(),
+ SizedBox(height: 20),
+ _buildStepsChecker(),
+ SizedBox(height: 20),
+            // _buildAchievements(),
           ],
         ),
       ),
     );
   }
 
-  // User profile header section
-  Widget _buildProfileHeader() {
-    return Center(
-      child: Column(
-        children: <Widget>[
-          CircleAvatar(
-            radius: 60,
-            backgroundImage: AssetImage('assets/user_profile.jpg'), // Replace with user's image
-          ),
-          SizedBox(height: 16),
-          Text(
-            'John Doe',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-          ),
-          Text(
-            'Age: 30 | Male',
-            style: TextStyle(
-              color: Colors.grey.shade600,
-              fontSize: 16,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // // User profile header section
+  // Widget _buildProfileHeader() {
+  //   return Center(
+  //     child: Column(
+  //       children: <Widget>[
+  //         CircleAvatar(
+  //           radius: 60,
+  //           backgroundImage: AssetImage('assets/user_profile.jpg'), // Replace with user's image
+  //         ),
+  //         SizedBox(height: 16),
+  //         Text(
+  //           'John Doe',
+  //           style: TextStyle(
+  //             fontSize: 24,
+  //             fontWeight: FontWeight.bold,
+  //             color: Colors.black,
+  //           ),
+  //         ),
+  //         Text(
+  //           'Age: 30 | Male',
+  //           style: TextStyle(
+  //             color: Colors.grey.shade600,
+  //             fontSize: 16,
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  // Personal Details section
-  Widget _buildPersonalDetails() {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              'Personal Details',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-            SizedBox(height: 10),
-            _buildDetailRow('Email:', 'johndoe@example.com'),
-            _buildDetailRow('Phone:', '+1 234 567 890'),
-            _buildDetailRow('Location:', 'New York, USA'),
-          ],
-        ),
-      ),
-    );
-  }
+  // // Personal Details section
+  // Widget _buildPersonalDetails() {
+  //   return Card(
+  //     elevation: 4,
+  //     shape: RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.circular(15),
+  //     ),
+  //     child: Padding(
+  //       padding: const EdgeInsets.all(16.0),
+  //       child: Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: <Widget>[
+  //           Text(
+  //             'Personal Details',
+  //             style: TextStyle(
+  //               fontSize: 20,
+  //               fontWeight: FontWeight.bold,
+  //               color: Colors.black,
+  //             ),
+  //           ),
+  //           SizedBox(height: 10),
+  //           _buildDetailRow('Email:', 'johndoe@example.com'),
+  //           _buildDetailRow('Phone:', '+1 234 567 890'),
+  //           _buildDetailRow('Location:', 'New York, USA'),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  // Row for details like email, phone, etc.
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        children: <Widget>[
-          Text(
-            '$label ',
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey.shade800),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: TextStyle(color: Colors.grey.shade600),
-              textAlign: TextAlign.right,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // // Row for details like email, phone, etc.
+  // Widget _buildDetailRow(String label, String value) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 8.0),
+  //     child: Row(
+  //       children: <Widget>[
+  //         Text(
+  //           '$label ',
+  //           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey.shade800),
+  //         ),
+  //         Expanded(
+  //           child: Text(
+  //             value,
+  //             style: TextStyle(color: Colors.grey.shade600),
+  //             textAlign: TextAlign.right,
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   // Body Metrics section (e.g., height, weight, BMI)
   Widget _buildBodyMetrics() {
@@ -164,6 +170,93 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
+
+  Widget _buildWaterIntake() {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'Water Intake',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(height: 10),
+            _buildMetricRow('Situp:', '180 cm'),
+            _buildMetricRow('Running:', '75 kg'),
+            // _buildMetricRow('BMI:', '23.1 (Normal)'),
+          ],
+        ),
+      ),
+    );
+  }
+
+
+  Widget _buildWorkoutStatus() {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'Workout Status',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(height: 10),
+            _buildMetricRow('Target:', '180 cm'),
+            _buildMetricRow('Taken:', '75 kg'),
+            // _buildMetricRow('BMI:', '23.1 (Normal)'),
+          ],
+        ),
+      ),
+    );
+  }
+ Widget _buildStepsChecker() {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'Step Counterr',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(height: 10),
+            _buildMetricRow('Target:', '18000 steps'),
+            _buildMetricRow('Taken:', '700'),
+            // _buildMetricRow('BMI:', '23.1 (Normal)'),
+          ],
+        ),
+      ),
+    );
+  }
   // Achievements section
   Widget _buildAchievements() {
     return Card(

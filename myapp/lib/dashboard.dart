@@ -115,11 +115,11 @@ class _DashboardPageState extends State<DashboardPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'Profile',
+            label: 'Stats',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.restaurant_menu),
-            label: 'Diet',
+            label: 'Report',
           ),
         ],
         currentIndex: _selectedIndex,
