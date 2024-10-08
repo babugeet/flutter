@@ -98,7 +98,7 @@ class _LoginPageState extends State<LoginPage> {
 
         // Store the cookie in SharedPreferences
         final prefs = await SharedPreferences.getInstance();
-        var setCookieHeader;
+        // var setCookieHeader;
         await prefs.setString('token1', token);
   await prefs.setString('userna1me', username);
         // await prefs.setString('token1', setCookieHeader ?? manualCookie);

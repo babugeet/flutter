@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/authservice.dart';
 import 'package:myapp/dashboard.dart';
 import 'package:myapp/loginpage.dart';
-import 'package:myapp/profilescreen.dart';
+import 'package:myapp/stats.dart';
 import 'package:myapp/signinpage.dart';
 import 'package:myapp/workoutscreen.dart';
 
@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginPage(),
         '/signup': (context) => SignupPage(),
         '/dashboard': (context) => ProtectedRoute(child: DashboardPage()),
-        '/profile': (context) => ProtectedRoute(child: ProfileScreen()),
+        '/profile': (context) => ProtectedRoute(child: StatsScreen()),
         '/workout': (context) => ProtectedRoute(child: WorkoutsScreen()),
       },
     );

@@ -3,7 +3,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:myapp/profilescreen.dart';
+import 'package:myapp/stats.dart';
 import 'package:myapp/workoutscreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -62,6 +62,7 @@ class _DashboardPageState extends State<DashboardPage> {
           }
           var userData = jsonDecode(rawData);
           await prefs.setString('weight', userData['weight'].toString());
+           await prefs.setString('bmi', userData['bmi'].toString());
           setState(() {
             _username = userData['username'] ?? '';
             _age = (userData['age'] != null && userData['age'] >= 0)
@@ -102,29 +103,38 @@ class _DashboardPageState extends State<DashboardPage> {
           ? DashboardScreen(username: _username, age: _age, weight: _weight) 
           : _selectedIndex == 1 
             ? WorkoutsScreen() 
-            : ProfileScreen(), // Assuming WorkoutsScreen and ProfileScreen are stateless too
+            : StatsScreen(), // Assuming WorkoutsScreen and ProfileScreen are stateless too
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
+          
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
+            // activeIcon: Icon(Icons.home, color: Colors.blueAccent),
             label: 'Home',
+            
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.fitness_center),
+            // activeIcon: Icon(Icons.home, color: Colors.blueAccent),
             label: 'Workouts',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
+            // activeIcon: Icon(Icons.home, color: Colors.blueAccent),
             label: 'Stats',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.restaurant_menu),
+            // activeIcon: Icon(Icons.home, color: Colors.blueAccent),
             label: 'Report',
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blueAccent,
-        onTap: _onItemTapped,
+        // selectedItemColor: Colors.blueAccent,
+         selectedItemColor: Colors.blueAccent, // Color for the selected item (both icon and text)
+      unselectedItemColor: Color.fromARGB(255, 206, 224, 228), // Color for unselected items
+      onTap: _onItemTapped,
+        // onTap: _onItemTapped,
       ),
     );
   }

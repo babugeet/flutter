@@ -14,6 +14,8 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
   Future<List<WorkoutDetail>>? cardioWorkoutsFuture;
   Future<List<WorkoutDetail>>? strengthWorkoutsFuture;
   Future<List<DietDetail>>? dietFuture;
+   double waterIntake = 0;
+   double stepTarget = 0;
 
   @override
   void initState() {
@@ -21,6 +23,46 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
     cardioWorkoutsFuture = fetchCardioWorkouts();
     strengthWorkoutsFuture = fetchStrengthWorkouts();
     dietFuture=fetchDiet();
+    _getWaterIntake();
+    _getStepTarget();
+  }
+      Future<void> _getStepTarget() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? bmiString = prefs.getString('bmi');
+    if (bmiString != null) {
+      double bmi = double.tryParse(bmiString) ?? 0;
+      print(bmi);
+      // Calculate water intake based on BMI
+      if (bmi < 18) {
+        stepTarget = 10000;
+      } else if (bmi >= 18 && bmi <= 25) {
+        stepTarget = 12000;
+      } else {
+        stepTarget = 8000;
+      }
+    }
+    setState(() {});
+    print("CalculatedStep: $stepTarget Steps");
+    
+  }
+    Future<void> _getWaterIntake() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? bmiString = prefs.getString('bmi');
+    if (bmiString != null) {
+      double bmi = double.tryParse(bmiString) ?? 0;
+      print(bmi);
+      // Calculate water intake based on BMI
+      if (bmi < 18) {
+        waterIntake = 3.0;
+      } else if (bmi >= 18 && bmi <= 25) {
+        waterIntake = 3.5;
+      } else {
+        waterIntake = 4.0;
+      }
+    }
+    setState(() {});
+    print("Calculated Water Intake: $waterIntake Liters");
+    
   }
 
   Future<List<DietDetail>> fetchDiet() async {
@@ -61,54 +103,14 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
     }
     
   }
-  //   List<WorkoutDetail> parseWorkoutData(Map<String, dynamic> data) {
-  //   final Map<String, String> workoutLabels = {
-  //     "legpress": "Leg Press",
-  //     "squats": "Squats",
-  //     "weightlift": "Weight Lift",
-  //     "deadlift": "Dead Lift",
-  //     "pushups": "Push Ups",
-  //     "pullups": "Pull Ups",
-  //     "jumpingjacks": "Jumping Jacks",
-  //     "walking": "Walking",
-  //     "swimming": "Swimming",
-  //     "cycling": "Cycling",
-  //     "running": "Running",
-  //     "lunges": "Lunges",
-  //     "benchpress": "Bench Press"
-  //   };
 
-  //   return data.entries.map((entry) {
-  //     String readableName = workoutLabels[entry.key] ?? entry.key; // Use a fallback if the key isn't in the map
-
-  //     // Assuming the entry value is the weight; adjust if your API structure is different
-  //     // int weight = int.tryParse(entry.value.toString()) ?? 0; // Get the weight from the entry value
-
-  //     return WorkoutDetail(
-  //       name: readableName,
-  //       duration: entry.value, // You can adjust this as needed
-  //       weight: entry.value.toString(),
-  //     );
-  //   }).toList();
-  // }
 List<DietDetail> parseDietData(Map<String, dynamic> data) {
       final Map<String, String> Diettime = {
       "breakfast": "BreakFast",
       "lunch": "Lunch",
       "dinner": "Dinner"
     };
-    //     return data.entries.map((entry) {
-    //   String readableName = workoutLabels[entry.key] ?? entry.key; // Use a fallback if the key isn't in the map
 
-    //   // Assuming the entry value is the weight; adjust if your API structure is different
-    //   // int weight = int.tryParse(entry.value.toString()) ?? 0; // Get the weight from the entry value
-
-    //   return WorkoutDetail(
-    //     name: readableName,
-    //     duration: entry.value, // You can adjust this as needed
-    //     weight: entry.value.toString(),
-    //   );
-    // }).toList();
   return data.entries.map((entry) {
     String readableName = Diettime[entry.key] ?? entry.key;
     // String name = entry.key; // Assuming entry.key is the diet name
@@ -272,7 +274,7 @@ List<DietDetail> parseDietData(Map<String, dynamic> data) {
                 return _buildWorkoutCategory(
                   title: 'Cardio Workouts',
                   icon: Icons.fitness_center,
-                  color: Colors.black12,
+                  color: const Color.fromARGB(255, 19, 6, 6),
                   workouts: snapshot.data!,
                 );
               }
@@ -292,13 +294,126 @@ List<DietDetail> parseDietData(Map<String, dynamic> data) {
                 return _buildDietCategory(
                   title: 'Diet',
                   icon: Icons.food_bank,
-                  color: Colors.black12,
+                  color: const Color.fromARGB(157, 255, 4, 63),
                   workouts: snapshot.data!,
                 );
               }
             },
           ),
+                    SizedBox(height: 20),
+                    _buildWaterStepRow()
+          // _buildWaterIntakeSection(),
+          // SizedBox(height: 20),
+          // _buildStepCounterSection(),
         ],
+      ),
+    );
+  }
+
+
+
+// Widget _buildWorkoutRow(){
+//         return Row(
+//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//       children: <Widget>[
+//         Expanded(
+//           child:  _buildWaterIntakeSection(),
+//         ),
+//         SizedBox(width: 20), // Space between water intake and steps counter
+//         Expanded(
+//           child: _buildStepCounterSection(),
+//         ),
+//       ],
+//     );
+// }
+  
+  Widget _buildWaterStepRow(){
+        return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Flexible(
+          child:  _buildWaterIntakeSection(),
+        ),
+        SizedBox(width: 20), // Space between water intake and steps counter
+        Flexible(
+          child: _buildStepCounterSection(),
+        ),
+      ],
+    );
+  }
+    Widget _buildWaterIntakeSection() {
+    return Card(
+      elevation: 6,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Icon(Icons.local_drink, color: Colors.blueAccent, size: 30),
+                SizedBox(width: 10),
+                Text(
+                  'Water Target',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 10),
+            Text(
+              '${waterIntake.toString()} Liters',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+   Widget _buildStepCounterSection() {
+    return Card(
+      elevation: 6,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Icon(Icons.directions_walk, color: Colors.green, size: 30),
+                SizedBox(width: 10),
+                Text(
+                  'Steps Required',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 10),
+            Text(
+              '${stepTarget.toString()} Steps',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
