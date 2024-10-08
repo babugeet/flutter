@@ -61,7 +61,7 @@ class _DashboardPageState extends State<DashboardPage> {
             rawData = rawData.substring(1); // Remove leading character
           }
           var userData = jsonDecode(rawData);
-
+          await prefs.setString('weight', userData['weight'].toString());
           setState(() {
             _username = userData['username'] ?? '';
             _age = (userData['age'] != null && userData['age'] >= 0)

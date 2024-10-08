@@ -33,35 +33,22 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
       }
 
       String authHeader = 'Bearer $token';
-final response = await http.post(
-        //   Uri.parse('http://localhost:8080/getuser/$username'),
-        //   headers: <String, String>{
-        //     'Content-Type': 'application/json; charset=UTF-8',
-        //     'Authorization': authHeader,
-        //   },
-        // );
-                // final response = await http.post(
-          Uri.parse('http://localhost:8080/getuser/$username/cardioplan'),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
+      final response = await http.post(
+        Uri.parse('http://localhost:8080/getuser/$username/cardioplan'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
             'Origin': 'http://localhost:8081',
-            'Authorization': authHeader,
+          'Authorization': authHeader,
             'Accept': '*/*',
-          },
-          body: jsonEncode(<String, String>{
-            'someKey': 'someValue', // If you need to send any data in the body
-          }),
-        );
+        },
+        body: jsonEncode(<String, String>{
+          'someKey': 'someValue', // If you need to send any data in the body
+        }),
+      );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
-        return data.entries.map((entry) {
-          return WorkoutDetail(
-            name: entry.key,
-            duration: entry.value,
-            caloriesBurned: 0, // Adjust this value as per your logic
-          );
-        }).toList();
+        return parseWorkoutData(data);
       } else {
         print('Failed to load cardio workouts. Status code: ${response.statusCode}');
         return [];
@@ -77,6 +64,7 @@ final response = await http.post(
       final prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('token1');
       String? username = prefs.getString('userna1me');
+      String? weight = prefs.getString('weight');
 
       if (token == null || username == null) {
         print('Token or username is missing.');
@@ -84,35 +72,22 @@ final response = await http.post(
       }
 
       String authHeader = 'Bearer $token';
-final response = await http.post(
-        //   Uri.parse('http://localhost:8080/getuser/$username'),
-        //   headers: <String, String>{
-        //     'Content-Type': 'application/json; charset=UTF-8',
-        //     'Authorization': authHeader,
-        //   },
-        // );
-                // final response = await http.post(
-          Uri.parse('http://localhost:8080/getuser/$username/workoutplan'),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
+      final response = await http.post(
+        Uri.parse('http://localhost:8080/getuser/$username/workoutplan'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
             'Origin': 'http://localhost:8081',
-            'Authorization': authHeader,
+          'Authorization': authHeader,
             'Accept': '*/*',
-          },
-          body: jsonEncode(<String, String>{
-            'someKey': 'someValue', // If you need to send any data in the body
-          }),
-        );
+        },
+        body: jsonEncode(<String, String>{
+          'someKey': 'someValue', // If you need to send any data in the body
+        }),
+      );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
-        return data.entries.map((entry) {
-          return WorkoutDetail(
-            name: entry.key,
-            duration: entry.value,
-            caloriesBurned: 0, // Adjust this value as per your logic
-          );
-        }).toList();
+        return parseWorkoutData(data);
       } else {
         print('Failed to load strength workouts. Status code: ${response.statusCode}');
         return [];
@@ -121,6 +96,37 @@ final response = await http.post(
       print('Error fetching strength workouts: $e');
       return [];
     }
+  }
+
+  List<WorkoutDetail> parseWorkoutData(Map<String, dynamic> data) {
+    final Map<String, String> workoutLabels = {
+      "legpress": "Leg Press",
+      "squats": "Squats",
+      "weightlift": "Weight Lift",
+      "deadlift": "Dead Lift",
+      "pushups": "Push Ups",
+      "pullups": "Pull Ups",
+      "jumpingjacks": "Jumping Jacks",
+      "walking": "Walking",
+      "swimming": "Swimming",
+      "cycling": "Cycling",
+      "running": "Running",
+      "lunges": "Lunges",
+      "benchpress": "Bench Press"
+    };
+
+    return data.entries.map((entry) {
+      String readableName = workoutLabels[entry.key] ?? entry.key; // Use a fallback if the key isn't in the map
+
+      // Assuming the entry value is the weight; adjust if your API structure is different
+      // int weight = int.tryParse(entry.value.toString()) ?? 0; // Get the weight from the entry value
+
+      return WorkoutDetail(
+        name: readableName,
+        duration: entry.value, // You can adjust this as needed
+        weight: entry.value.toString(),
+      );
+    }).toList();
   }
 
   @override
@@ -178,17 +184,17 @@ final response = await http.post(
               WorkoutDetail(
                 name: 'Egg white',
                 duration: '60 mins',
-                caloriesBurned: 250,
+                weight: "0", // Not applicable for diet
               ),
               WorkoutDetail(
                 name: 'Chicken 150g',
                 duration: '45 mins',
-                caloriesBurned: 200,
+                weight: "0", // Not applicable for diet
               ),
               WorkoutDetail(
                 name: 'Rice 50g',
                 duration: '30 mins',
-                caloriesBurned: 150,
+                weight: "0", // Not applicable for diet
               ),
             ],
           ),
@@ -272,11 +278,50 @@ final response = await http.post(
 class WorkoutDetail {
   final String name;
   final String duration;
+  // final int weight; // Weight property to hold the weight value
   final int caloriesBurned;
+  final String weight;
 
   WorkoutDetail({
     required this.name,
     required this.duration,
-    required this.caloriesBurned,
-  });
+    required this.weight,
+  }) : caloriesBurned = calculateCalories(name, duration, weight);
+
+  static int calculateCalories(String exerciseName, String duration, String weight) {
+    int minutes = int.tryParse(duration.split(' ')[0]) ?? 0;
+    int userWeight = int.tryParse(weight.split(' ')[0]) ?? 0;
+    // A simple calorie calculation logic based on exercise type and weight
+    switch (exerciseName.toLowerCase()) {
+      case 'leg press':
+        return ((minutes) * userWeight * 5).toInt(); // Example calculation
+      case 'squats':
+        return (minutes * userWeight * 5).toInt(); // Example calculation
+      case 'weight lift':
+        return (minutes * userWeight * 6).toInt(); // Example calculation
+      case 'deadlift':
+        return (minutes * userWeight * 6).toInt(); // Example calculation
+      case 'push ups':
+        return (minutes * userWeight *8).toInt(); // Example calculation
+      case 'pull ups':
+        return (minutes * userWeight *8).toInt(); // Example calculation
+      case 'jumping jacks':
+        return (minutes * userWeight *8).toInt(); // Example calculation
+      case 'walking':
+        return (minutes * userWeight *3.8).toInt(); // Example calculation
+      case 'swimming':
+        return (minutes * userWeight *7).toInt(); // Example calculation
+      case 'cycling':
+        return (minutes * userWeight *8).toInt(); // Example calculation
+      case 'running':
+        return (minutes * userWeight *9.8).toInt(); // Example calculation
+      case 'lunges':
+        return (minutes * userWeight *5).toInt(); // Example calculation
+      case 'bench press':
+        return (minutes * userWeight *5.5).toInt(); // Example calculation
+      // Add more cases as needed
+      default:
+        return 0; // Default to 0 calories if no match
+    }
+  }
 }
