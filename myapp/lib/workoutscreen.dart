@@ -602,7 +602,7 @@ class WorkoutDetail {
         return (minutes * userWeight * 6).toInt(); // Example calculation
       case 'push ups':
         return (minutes * userWeight *8).toInt(); // Example calculation
-      case 'pull ups':
+      case 'pullups':
         return (minutes * userWeight *8).toInt(); // Example calculation
       case 'jumping jacks':
         return (minutes * userWeight *8).toInt(); // Example calculation

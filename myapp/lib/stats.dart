@@ -26,7 +26,7 @@ class _StatsScreenState extends State<StatsScreen> {
       "deadlift": "Dead Lift",
       "pushups": "Push Ups",
       "pullups": "Pull Ups",
-      "jumpingjacks": "Jumping Jacks",
+      "jacks": "Jumping Jacks",
       "walking": "Walking",
       "swimming": "Swimming",
       "cycling": "Cycling",
@@ -412,21 +412,38 @@ class _StatsScreenState extends State<StatsScreen> {
       print('Token or username is missing.');
       return;
     }
-
+      Map<String, String> keyMapping1 = {
+     "Leg Press (reps)": "legpressdone",
+     "Squats (reps)": "squatsdone",
+     "Weight Lift (kg)": "weightliftdone",
+     "Dead Lift (kg)": "deadliftdone",
+     "Push Ups (reps)": "pushupsdone",
+     "Pull Ups (reps)":"pullupsdone",
+     "Jumping Jacks (reps)":"jumpingjacksdone",
+   "Walking (metres)": "walkingdone",
+    "Swimming (metres)":"swimmingdone" ,
+    "Cycling (metres)":"cyclingdone" ,
+   "Running (metres)": "runningdone" ,
+   "Lunges (reps)":"lungesdone" ,
+    "Bench Press (reps)": "benchpressdone"
+  };
+ String newKey1 = keyMapping1[label] ?? label;
+ var myInt = int.parse(value);
+assert(myInt is int);
     String authHeader = 'Bearer $token'; 
     final response = await http.post(
-      Uri.parse('http://localhost:8080/getuser/$username/cardioplan'),
+      Uri.parse('http://localhost:8080/userinput/$username'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': authHeader,
       },
-      body: jsonEncode(<String, String>{
-        'cardio': value, // Send the entered value in the body
+      body: jsonEncode(<String, int>{
+        newKey1 : myInt, // Send the entered value in the body
       }),
     );
 
     if (response.statusCode == 200) {
-      print('Cardio value submitted: $value for $label');
+      print('Cardio value submitted: $value for $newKey1');
       // Handle the successful response here (e.g., show a message)
     } else {
       print('Failed to submit cardio value: ${response.reasonPhrase}');
@@ -444,16 +461,33 @@ class _StatsScreenState extends State<StatsScreen> {
       print('Token or username is missing.');
       return;
     }
-
+          Map<String, String> keyMapping1 = {
+     "Leg Press (reps)": "legpressdone",
+     "Squats (reps)": "squatsdone",
+     "Weight Lift (kg)": "weightliftdone",
+     "Dead Lift (kg)": "deadliftdone",
+     "Push Ups (reps)": "pushupsdone",
+     "Pull Ups (reps)":"pullupsdone",
+     "Jumping Jacks (reps)":"jumpingjacksdone",
+   "Walking (metres)": "walkingdone",
+    "Swimming (metres)":"swimmingdone" ,
+    "Cycling (metres)":"cyclingdone" ,
+   "Running (metres)": "runningdone" ,
+   "Lunges (reps)":"lungesdone" ,
+    "Bench Press (reps)": "benchpressdone"
+  };
+ String newKey1 = keyMapping1[label] ?? label;
+ var myInt = int.parse(value);
+assert(myInt is int);
     String authHeader = 'Bearer $token'; 
     final response = await http.post(
-      Uri.parse('http://localhost:8080/getuser/$username/workoutplan'),
+      Uri.parse('http://localhost:8080/userinput/$username'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': authHeader,
       },
-      body: jsonEncode(<String, String>{
-        'cardio': value, // Send the entered value in the body
+      body: jsonEncode(<String, int>{
+        newKey1: myInt, // Send the entered value in the body
       }),
     );
 
@@ -466,13 +500,72 @@ class _StatsScreenState extends State<StatsScreen> {
     }
   }
 
-  void _saveWaterIntake() {
+  void _saveWaterIntake()async{
+        final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token1');
+    String? username = prefs.getString('userna1me');
+
+    if (token == null || username == null) {
+      print('Token or username is missing.');
+      return;
+    }
     String waterIntake = _waterIntakeController.text;
-    print('Water Consumed: $waterIntake liters');
+     var myInt = int.parse(waterIntake);
+assert(myInt is int);
+    String authHeader = 'Bearer $token'; 
+    final response = await http.post(
+      Uri.parse('http://localhost:8080/userinput/$username'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': authHeader,
+      },
+      body: jsonEncode(<String, int>{
+        "water": myInt, // Send the entered value in the body
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print('Water Consumed: $waterIntake liters');
+      // Handle the successful response here (e.g., show a message)
+    } else {
+      print('Failed to submit water intake value: ${response.reasonPhrase}');
+      // Handle the error here (e.g., show an error message)
+    }
+    
   }
 
-  void _saveSteps() {
+  void _saveSteps() async {
+       final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token1');
+    String? username = prefs.getString('userna1me');
+
+    if (token == null || username == null) {
+      print('Token or username is missing.');
+      return;
+    }
     String stepsWalked = _stepsController.text;
+     var myInt = int.parse(stepsWalked);
+assert(myInt is int);
+    String authHeader = 'Bearer $token'; 
+    final response = await http.post(
+      Uri.parse('http://localhost:8080/userinput/$username'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': authHeader,
+      },
+      body: jsonEncode(<String, int>{
+        "steps": myInt, // Send the entered value in the body
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print('Water Consumed: $stepsWalked liters');
+      // Handle the successful response here (e.g., show a message)
+    } else {
+      print('Failed to submit water intake value: ${response.reasonPhrase}');
+      // Handle the error here (e.g., show an error message)
+    }
+    
     print('Steps Walked: $stepsWalked steps');
   }
 
