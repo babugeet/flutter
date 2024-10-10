@@ -113,6 +113,45 @@ class _StatsScreenState extends State<StatsScreen> {
       print('Failed to fetch cardio metrics: ${response.reasonPhrase}');
     }
   }
+void showNotification(BuildContext context, String message, bool isSuccess) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(
+          isSuccess ? 'Success' : 'Failed',
+          style: TextStyle(
+            color: isSuccess ? Colors.green : Colors.red,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Text(
+          message,
+          style: TextStyle(
+            fontSize: 16,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the dialog
+            },
+            child: Text(
+              'OK',
+              style: TextStyle(
+                color: Colors.blue,
+              ),
+            ),
+          ),
+        ],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        elevation: 5,
+      );
+    },
+  );
+}
 
   // Method to fetch cardio metrics from the API
   void _fetchStrengthMetrics() async {
@@ -322,8 +361,8 @@ class _StatsScreenState extends State<StatsScreen> {
           ),
         ),
         SizedBox(width: 10),
-        ElevatedButton(
-          onPressed: () => _submitCardioValue(label, controller.text),
+        ElevatedButton(     
+          onPressed: () =>  {_submitCardioValue(label, controller.text),controller.clear()},
           style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, foregroundColor: Colors.white),
           child: Text('Save'),
         ),
@@ -383,7 +422,7 @@ class _StatsScreenState extends State<StatsScreen> {
         ),
         SizedBox(width: 10),
         ElevatedButton(
-          onPressed: () => _submitStrengthValue(label, controller.text),
+          onPressed: () { _submitStrengthValue(label, controller.text);controller.clear();},
           style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, foregroundColor: Colors.white),
           child: Text('Save'),
         ),
@@ -401,6 +440,7 @@ class _StatsScreenState extends State<StatsScreen> {
       ),
       keyboardType: TextInputType.number,
     );
+    
   }
 
   void _submitCardioValue(String label, String value) async {
@@ -443,9 +483,12 @@ assert(myInt is int);
     );
 
     if (response.statusCode == 200) {
+      _cardioController.clear();
+       showNotification(context, 'Your data has been submitted successfully!', true);
       print('Cardio value submitted: $value for $newKey1');
       // Handle the successful response here (e.g., show a message)
     } else {
+       showNotification(context, 'Failed to submit cardio value', false);
       print('Failed to submit cardio value: ${response.reasonPhrase}');
       // Handle the error here (e.g., show an error message)
     }
@@ -492,9 +535,13 @@ assert(myInt is int);
     );
 
     if (response.statusCode == 200) {
+      _strengthController.clear(); 
+      showNotification(context, 'Your data has been submitted successfully!', true);
+      
       print('Strength value submitted: $value for $label');
       // Handle the successful response here (e.g., show a message)
     } else {
+       showNotification(context, 'failed', false);
       print('Failed to submit strength value: ${response.reasonPhrase}');
       // Handle the error here (e.g., show an error message)
     }
@@ -525,9 +572,13 @@ assert(myInt is int);
     );
 
     if (response.statusCode == 200) {
+      _waterIntakeController.clear(); 
+      showNotification(context, 'Your data has been submitted successfully!', true);
+      
       print('Water Consumed: $waterIntake liters');
       // Handle the successful response here (e.g., show a message)
     } else {
+      showNotification(context, 'failed', false);
       print('Failed to submit water intake value: ${response.reasonPhrase}');
       // Handle the error here (e.g., show an error message)
     }
@@ -559,9 +610,13 @@ assert(myInt is int);
     );
 
     if (response.statusCode == 200) {
+      _stepsController.clear();
+      showNotification(context, 'Your data has been submitted successfully!', true);
+      
       print('Water Consumed: $stepsWalked liters');
       // Handle the successful response here (e.g., show a message)
     } else {
+      showNotification(context, 'failed', false);
       print('Failed to submit water intake value: ${response.reasonPhrase}');
       // Handle the error here (e.g., show an error message)
     }
@@ -569,8 +624,13 @@ assert(myInt is int);
     print('Steps Walked: $stepsWalked steps');
   }
 
-  void _saveStrengthMetric() {
-    String strengthValue = _strengthController.text;
-    print('Strength Value: $strengthValue');
-  }
+  // void _saveStrengthMetric() {
+  //   String strengthValue = _strengthController.text;
+  //   print('Strength Value: $strengthValue');
+  // }
 }
+
+// After successful submission
+// Clear water intake input field
+ // Clear steps counter input field
+// Clear respective input field in the cardio and strength input fields
