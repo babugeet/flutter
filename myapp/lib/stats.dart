@@ -10,6 +10,7 @@ class StatsScreen extends StatefulWidget {
   _StatsScreenState createState() => _StatsScreenState();
 }
 
+
 class _StatsScreenState extends State<StatsScreen> {
   final TextEditingController _waterIntakeController = TextEditingController();
   final TextEditingController _stepsController = TextEditingController();

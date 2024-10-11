@@ -602,7 +602,7 @@ class WorkoutDetail {
         return (minutes * userWeight * 6).toInt(); // Example calculation
       case 'push ups':
         return (minutes * userWeight *8).toInt(); // Example calculation
-      case 'pullups':
+      case 'pull ups':
         return (minutes * userWeight *8).toInt(); // Example calculation
       case 'jumping jacks':
         return (minutes * userWeight *8).toInt(); // Example calculation
@@ -620,6 +620,7 @@ class WorkoutDetail {
         return (minutes * userWeight *5.5).toInt(); // Example calculation
       // Add more cases as needed
       default:
+      print(exerciseName.toLowerCase());
         return 0; // Default to 0 calories if no match
     }
   }
