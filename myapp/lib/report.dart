@@ -9,9 +9,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
 
-DateTime _selectedDay = DateTime.now();
+DateTime ?_selectedDay ;
 String  _dateSelected = ' ';
 DateTime _focusedDay = DateTime.now(); // For managing the focused day
+bool _isWorkoutDataAvailable = true;
+bool _isWaterDataAvailable = true;
+bool _isStepsDataAvailable = true;
+
 
 class ReportPage extends StatefulWidget {
   const ReportPage({super.key});
@@ -121,6 +125,7 @@ if (response.statusCode == 200) {
     final data = json.decode(response.body);
     List workoutData = data['Workout'];
     setState(() {
+       _isWorkoutDataAvailable = true;
       _workoutProgressData = workoutData.isNotEmpty
           ? workoutData.map<Map<String, dynamic>>((workout) {
               String newKey = keyMapping[workout['Name']] ?? workout['Name'];
@@ -139,6 +144,7 @@ if (response.statusCode == 200) {
     });
 } else {
     setState(() {
+      _isWorkoutDataAvailable = false;
       _workoutProgressData = []; // Clear data on error
     });
     print('Failed to load workout data: ${response.statusCode}');
@@ -189,11 +195,13 @@ if (response.statusCode == 200) {
     final data = json.decode(response.body);
     print(data);
     setState(() {
+      _isStepsDataAvailable = true;
       _stepsWalked = data['steps'] ?? 0;
       _stepProgress = (_stepsWalked / stepTarget).clamp(0.0, 1.0);
     });
 } else {
     setState(() {
+      _isStepsDataAvailable = false;
       _stepsWalked = 0; // Reset steps walked if no data is available
       _stepProgress = 0.0; // Reset step progress if no data is available
     });
@@ -245,11 +253,13 @@ if (response.statusCode == 200) {
     final data = json.decode(response.body);
     print(data);
     setState(() {
+       _isWaterDataAvailable = true;
       _waterConsumed = data['water'] ?? 0;
       _waterProgress = (_waterConsumed / waterIntake).clamp(0.0, 1.0);
     });
 } else {
     setState(() {
+       _isWaterDataAvailable = false;
       _waterConsumed = 0; // Reset water consumed if no data is available
       _waterProgress = 0.0; // Reset water progress if no data is available
     });
@@ -261,7 +271,43 @@ if (response.statusCode == 200) {
     }
   }
   
-    Widget _buildWorkoutProgressCharts(BuildContext context,String _selectedDay) {
+    Widget _buildWorkoutProgressCharts(BuildContext context) {
+        if (!_isWorkoutDataAvailable) {
+  return Center(
+  child: Container(
+    padding: EdgeInsets.all(16.0),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(12.0),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.5),
+          spreadRadius: 2,
+          blurRadius: 5,
+          offset: Offset(0, 3), // changes position of shadow
+        ),
+      ],
+      border: Border.all(color: Colors.red, width: 1.5),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          Icons.error_outline,
+          color: Colors.red,
+          size: 24,
+        ),
+        SizedBox(width: 8), // Space between the icon and text
+        Text(
+          'No details available for Workout done',
+          style: TextStyle(fontSize: 18, color: Colors.red),
+        ),
+      ],
+    ),
+  ),
+);
+
+  }
       double value1;
 double value2;
   return Wrap(
@@ -354,23 +400,23 @@ String formatSelectedDay(DateTime date) {
               // lastDay: DateTime.utc(2030, 12, 31),
               lastDay: DateTime.now(),
               focusedDay: _focusedDay,
-              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+               selectedDayPredicate: (day) => _selectedDay != null && isSameDay(_selectedDay, day),
               onDaySelected: (selectedDay, focusedDay) {
                 setState(() {
                   print(selectedDay);
                  _selectedDay = selectedDay; // Update _selectedDay first
-    _dateSelected = formatSelectedDay(_selectedDay); // Then set _dateSelected
-    _focusedDay = focusedDay; // Update focused day
-                  _fetchWaterIntakeData(_dateSelected);
-    _fetchStepstakeData(_dateSelected);
-    _fetchWorkoutProgressData(_dateSelected);
+        _dateSelected = formatSelectedDay(_selectedDay!); // Then set _dateSelected
+        _focusedDay = focusedDay; // Update focused day
+        _fetchWaterIntakeData(_dateSelected);
+        _fetchStepstakeData(_dateSelected);
+        _fetchWorkoutProgressData(_dateSelected);
                 });
               },
               calendarStyle: CalendarStyle(
-                todayDecoration: BoxDecoration(
-                  color: Colors.blue[400],
-                  shape: BoxShape.circle,
-                ),
+                // todayDecoration: BoxDecoration(
+                //   color: Colors.blue[400],
+                //   shape: BoxShape.circle,
+                // ),
                 selectedDecoration: BoxDecoration(
                   color: Colors.blue[800],
                   shape: BoxShape.circle,
@@ -385,11 +431,11 @@ String formatSelectedDay(DateTime date) {
             ),
           ),
              SizedBox(height: 20),
-          _buildWorkoutProgressCharts(context,formatSelectedDay(_selectedDay)),
+          _buildWorkoutProgressCharts(context),
                     SizedBox(height: 20),
-          _buildWaterIntakeProgress(_waterConsumed,_waterProgress,formatSelectedDay(_selectedDay)),
+          _buildWaterIntakeProgress(_waterConsumed,_waterProgress),
           SizedBox(height: 20),
-          _buildStepsCounter(_stepsWalked,_stepProgress,formatSelectedDay(_selectedDay)),
+          _buildStepsCounter(_stepsWalked,_stepProgress),
           SizedBox(height: 20),
          
         ],
@@ -399,7 +445,42 @@ String formatSelectedDay(DateTime date) {
   }
 }
 
-  Widget _buildWaterIntakeProgress(int _waterConsumed, double _waterProgress,String _selectedDay) {
+  Widget _buildWaterIntakeProgress(int _waterConsumed, double _waterProgress) {
+      if (!_isWaterDataAvailable) {
+     return Center(
+  child: Container(
+    padding: EdgeInsets.all(16.0),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(12.0),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.5),
+          spreadRadius: 2,
+          blurRadius: 5,
+          offset: Offset(0, 3), // changes position of shadow
+        ),
+      ],
+      border: Border.all(color: Colors.red, width: 1.5),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          Icons.error_outline,
+          color: Colors.red,
+          size: 24,
+        ),
+        SizedBox(width: 8), // Space between the icon and text
+        Text(
+          'No details available for Water Intake',
+          style: TextStyle(fontSize: 18, color: Colors.red),
+        ),
+      ],
+    ),
+  ),
+);
+  }
     return Card(
       elevation: 6,
       shape: RoundedRectangleBorder(
@@ -442,7 +523,42 @@ String formatSelectedDay(DateTime date) {
     );
   }
 
-  Widget _buildStepsCounter(int _stepsWalked,double _stepProgress,String _selectedDay ) {
+  Widget _buildStepsCounter(int _stepsWalked,double _stepProgress ) {
+      if (!_isStepsDataAvailable) {
+     return Center(
+  child: Container(
+    padding: EdgeInsets.all(16.0),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(12.0),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.5),
+          spreadRadius: 2,
+          blurRadius: 5,
+          offset: Offset(0, 3), // changes position of shadow
+        ),
+      ],
+      border: Border.all(color: Colors.red, width: 1.5),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          Icons.error_outline,
+          color: Colors.red,
+          size: 24,
+        ),
+        SizedBox(width: 8), // Space between the icon and text
+        Text(
+          'No details available for Steps Walked',
+          style: TextStyle(fontSize: 18, color: Colors.red),
+        ),
+      ],
+    ),
+  ),
+);
+  }
     return Card(
       elevation: 6,
       shape: RoundedRectangleBorder(

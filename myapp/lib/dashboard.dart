@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:myapp/authservice.dart';
 import 'package:myapp/report.dart';
 import 'package:myapp/stats.dart';
 
@@ -16,7 +17,7 @@ class DashboardPage extends StatefulWidget {
   @override
   _DashboardPageState createState() => _DashboardPageState();
 }
-
+final AuthService _authService = AuthService();
 class _DashboardPageState extends State<DashboardPage> {
   int _selectedIndex = 0;
   String _username = '';
@@ -315,6 +316,15 @@ class _DashboardPageState extends State<DashboardPage> {
           'Fitness Tracker',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () async {
+              await _authService.logout(); // Call the logout method
+              Navigator.of(context).pushReplacementNamed('/login'); // Navigate to login page
+            },
+          ),
+        ],
         backgroundColor: Colors.blueAccent,
         elevation: 0,
         centerTitle: true,
