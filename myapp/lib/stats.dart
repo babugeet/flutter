@@ -78,7 +78,7 @@ class _StatsScreenState extends State<StatsScreen> {
       );
       // Map of original keys to desired formatted keys
   Map<String, String> keyMapping = {
-    "legpress": "Leg Press (reps)",
+    "legpress": "Leg Press (kg)",
     "squats": "Squats (reps)",
     "weightlift": "Weight Lift (kg)",
     "deadlift": "Dead Lift (kg)",
@@ -181,7 +181,7 @@ void showNotification(BuildContext context, String message, bool isSuccess) {
       );
       // Map of original keys to desired formatted keys
   Map<String, String> keyMapping = {
-    "legpress": "Leg Press (reps)",
+    "legpress": "Leg Press (kg)",
     "squats": "Squats (reps)",
     "weightlift": "Weight Lift (kg)",
     "deadlift": "Dead Lift (kg)",
@@ -454,7 +454,7 @@ void showNotification(BuildContext context, String message, bool isSuccess) {
       return;
     }
       Map<String, String> keyMapping1 = {
-     "Leg Press (reps)": "legpressdone",
+     "Leg Press (kg)": "legpressdone",
      "Squats (reps)": "squatsdone",
      "Weight Lift (kg)": "weightliftdone",
      "Dead Lift (kg)": "deadliftdone",
@@ -506,7 +506,7 @@ assert(myInt is int);
       return;
     }
           Map<String, String> keyMapping1 = {
-     "Leg Press (reps)": "legpressdone",
+     "Leg Press (kg)": "legpressdone",
      "Squats (reps)": "squatsdone",
      "Weight Lift (kg)": "weightliftdone",
      "Dead Lift (kg)": "deadliftdone",
