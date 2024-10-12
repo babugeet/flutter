@@ -3,7 +3,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:myapp/report.dart';
 import 'package:myapp/stats.dart';
+
 import 'package:myapp/workoutscreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -51,7 +53,7 @@ class _DashboardPageState extends State<DashboardPage> {
     return int.tryParse(target.split(' ')[0]) ?? 0;
   }
     Map<String, String> keyMapping = {
-    "legpress": "Leg Press Progress (reps)",
+    "legpress": "Leg Press Progress (kg)",
     "squats": "Squats Progress (reps)",
     "weightlift": "Weight Lift Progress (kg)",
     "deadlift": "Dead Lift Progress (kg)",
@@ -92,7 +94,7 @@ class _DashboardPageState extends State<DashboardPage> {
         return const Color.fromARGB(255, 217, 239, 75);
       case 'Weight Lift Progress (kg)':
         return  const Color.fromARGB(255, 155, 119, 65);
-      case 'Leg Press Progress (reps)':
+      case 'Leg Press Progress (kg)':
         return const Color.fromARGB(255, 10, 86, 227);
       default:
         return Colors.grey;
@@ -319,9 +321,14 @@ class _DashboardPageState extends State<DashboardPage> {
       ),
       body: _selectedIndex == 0 
           ? DashboardScreen(username: _username, age: _age, weight: _weight, waterProgress: _waterProgress, waterConsumed: _waterConsumed, stepProgress: _stepProgress,stepConsumed: _stepsWalked,workoutProgressData: _workoutProgressData,) 
-          : _selectedIndex == 1 
+         : _selectedIndex == 1 
             ? WorkoutsScreen() 
-            : StatsScreen(),
+            : _selectedIndex == 2
+            ? StatsScreen()
+            // : _ReportPageState(username: _username, age: _age, weight: _weight, waterProgress: _waterProgress, waterConsumed: _waterConsumed, stepConsumed: _stepsWalked, stepProgress: _stepProgress, workoutProgressData: _workoutProgressData),
+            // : ReportPage(username: _username, age: _age, weight: _weight, waterProgress: _waterProgress, waterConsumed: _waterConsumed, stepProgress: _stepProgress,stepConsumed: _stepsWalked,workoutProgressData1: _workoutProgressData,),
+            : ReportPage(),
+
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -337,8 +344,8 @@ class _DashboardPageState extends State<DashboardPage> {
             label: 'Stats',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant_menu),
-            label: 'Report',
+            icon: Icon(Icons.summarize_sharp),
+            label: 'Reports',
           ),
         ],
         currentIndex: _selectedIndex,
@@ -396,10 +403,22 @@ final List<Map<String, dynamic>> workoutProgressData;
   }
 
   Widget _buildWorkoutProgressCharts(BuildContext context) {
+double value1;
+double value2;
+
+
+    
   return Wrap(
     spacing: 16.0, // Horizontal spacing between charts
     runSpacing: 16.0, // Vertical spacing between rows of charts
     children: workoutProgressData.map((workout) {
+      if (workout['progress'] >= workout['target']) {
+  value1 = workout['progress'].toDouble(); // Completed progress
+  value2 = 0; // No remaining progress
+} else {
+  value1 = workout['progress'].toDouble(); // Completed progress
+  value2 = (workout['target'] - workout['progress']).toDouble(); // Remaining progress
+}
       return SizedBox(
         width: MediaQuery.of(context).size.width / 2 - 24, // Width to fit two charts in a row
         child: Card(
@@ -426,21 +445,24 @@ final List<Map<String, dynamic>> workoutProgressData;
                     ),
                   ],
                 ),
+                
                 SizedBox(height: 10),
                 SizedBox(
                   height: 150,
                   child: PieChart(
                     PieChartData(
                       sections: [
+                        // done 121, taget: 30
                         PieChartSectionData(
-                          value: workout['progress'],
+                          
+                          value: value1,
                           // title: '${workout['progress'].toStringAsFixed(1)}%',
                           color: workout['color'],
                           radius: 35,
                           titleStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                         ),
                         PieChartSectionData(
-                          value: ( workout['target'] - workout['progress']).toDouble(),
+                          value: value2,
                           color: Colors.grey.shade300,
                           radius: 35,
                         ),
@@ -501,47 +523,7 @@ final List<Map<String, dynamic>> workoutProgressData;
       ),
     );
   }
-  //  Widget _buildWorkoutProgressChart() {
-  //   return Card(
-  //     elevation: 6,
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.circular(15),
-  //     ),
-  //     child: Padding(
-  //       padding: const EdgeInsets.all(16.0),
-  //       child: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: <Widget>[
-  //           Row(
-  //             children: [
-  //               Icon(Icons.pie_chart, color: Colors.green),
-  //               SizedBox(width: 10),
-  //               Text(
-  //                 'Workout Progress',
-  //                 style: TextStyle(
-  //                   fontSize: 20,
-  //                   fontWeight: FontWeight.bold,
-  //                   color: Colors.black,
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //           SizedBox(height: 10),
-  //           SizedBox(
-  //             height: 200,
-  //             child: PieChart(
-  //               PieChartData(
-  //                 sections: workoutProgressData,
-  //                 centerSpaceRadius: 40,
-  //                 sectionsSpace: 2,
-  //               ),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
+
 
   Widget _buildWorkoutsCompleted() {
     return Card(
@@ -586,61 +568,61 @@ final List<Map<String, dynamic>> workoutProgressData;
 
 
 
-  Widget _buildProgressChart() {
-    return Card(
-      elevation: 6,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              children: [
-                Icon(Icons.show_chart, color: Colors.green),
-                SizedBox(width: 10),
-                Text(
-                  'Workout Progress',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            SizedBox(
-              height: 200,
-              child: BarChart(
-                BarChartData(
-                  barTouchData: BarTouchData(enabled: false),
-                  titlesData: FlTitlesData(show: true),
-                  borderData: FlBorderData(show: false),
-                  barGroups: [
-                    BarChartGroupData(
-                      x: 0,
-                      barRods: [BarChartRodData(toY: 5, color: Colors.blue)],
-                    ),
-                    BarChartGroupData(
-                      x: 1,
-                      barRods: [BarChartRodData(toY: 3, color: Colors.red)],
-                    ),
-                    BarChartGroupData(
-                      x: 2,
-                      barRods: [BarChartRodData(toY: 6, color: Colors.green)],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _buildProgressChart() {
+  //   return Card(
+  //     elevation: 6,
+  //     shape: RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.circular(15),
+  //     ),
+  //     child: Padding(
+  //       padding: const EdgeInsets.all(16.0),
+  //       child: Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: <Widget>[
+  //           Row(
+  //             children: [
+  //               Icon(Icons.show_chart, color: Colors.green),
+  //               SizedBox(width: 10),
+  //               Text(
+  //                 'Workout Progress',
+  //                 style: TextStyle(
+  //                   fontSize: 20,
+  //                   fontWeight: FontWeight.bold,
+  //                   color: Colors.black,
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //           SizedBox(height: 10),
+  //           SizedBox(
+  //             height: 200,
+  //             child: BarChart(
+  //               BarChartData(
+  //                 barTouchData: BarTouchData(enabled: false),
+  //                 titlesData: FlTitlesData(show: true),
+  //                 borderData: FlBorderData(show: false),
+  //                 barGroups: [
+  //                   BarChartGroupData(
+  //                     x: 0,
+  //                     barRods: [BarChartRodData(toY: 5, color: Colors.blue)],
+  //                   ),
+  //                   BarChartGroupData(
+  //                     x: 1,
+  //                     barRods: [BarChartRodData(toY: 3, color: Colors.red)],
+  //                   ),
+  //                   BarChartGroupData(
+  //                     x: 2,
+  //                     barRods: [BarChartRodData(toY: 6, color: Colors.green)],
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildWaterIntakeProgress() {
     return Card(
