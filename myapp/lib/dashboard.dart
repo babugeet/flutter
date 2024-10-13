@@ -690,7 +690,7 @@ double value2;
           children: <Widget>[
             Row(
               children: [
-                Icon(Icons.local_drink, color: Colors.blue),
+                Icon(Icons.directions_walk, color: const Color.fromARGB(255, 20, 160, 39)),
                 SizedBox(width: 10),
                 Text(
                   'Step Counter',
