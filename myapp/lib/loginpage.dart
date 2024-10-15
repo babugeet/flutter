@@ -130,78 +130,151 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // body: Container(
+      //   decoration: BoxDecoration(
+      //     gradient: LinearGradient(
+      //       colors: [Colors.blueGrey, Colors.grey],
+      //       begin: Alignment.topCenter,
+      //       end: Alignment.bottomCenter,
+      //     ),
+      //   ),
+      //   child: Center(
+      //     child: Padding(
+      //       padding: const EdgeInsets.all(16.0),
+      //       child: Column(
+      //         mainAxisAlignment: MainAxisAlignment.center,
+      //         children: <Widget>[
+      //           Icon(Icons.fitness_center, color: Colors.white, size: 100),
+      //           SizedBox(height: 30),
+      //           TextField(
+      //             controller: _usernameController,
+      //             style: TextStyle(color: Colors.white),
+      //             decoration: InputDecoration(
+      //               filled: true,
+      //               fillColor: Colors.white24,
+      //               hintText: 'Username',
+      //               hintStyle: TextStyle(color: Colors.white70),
+      //               prefixIcon: Icon(Icons.person, color: Colors.white70),
+      //               border: OutlineInputBorder(
+      //                 borderRadius: BorderRadius.circular(30),
+      //                 borderSide: BorderSide.none,
+      //               ),
+      //             ),
+      //           ),
+      //           SizedBox(height: 20),
+      //           TextField(
+      //             controller: _passwordController,
+      //             obscureText: true,
+      //             style: TextStyle(color: Colors.white),
+      //             decoration: InputDecoration(
+      //               filled: true,
+      //               fillColor: Colors.white24,
+      //               hintText: 'Password',
+      //               hintStyle: TextStyle(color: Colors.white70),
+      //               prefixIcon: Icon(Icons.lock, color: Colors.white70),
+      //               border: OutlineInputBorder(
+      //                 borderRadius: BorderRadius.circular(30),
+      //                 borderSide: BorderSide.none,
+      //               ),
+      //             ),
+      //           ),
+      //           SizedBox(height: 30),
+      //           ElevatedButton(
+      //             style: ElevatedButton.styleFrom(
+      //               backgroundColor: Colors.white24,
+      //               padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+      //               shape: RoundedRectangleBorder(
+      //                 borderRadius: BorderRadius.circular(30),
+      //               ),
+      //             ),
+      //             onPressed: _login,
+      //             child: Text('Login', style: TextStyle(color: Colors.white, fontSize: 18)),
+      //           ),
+      //           SizedBox(height: 20),
+      //           TextButton(
+      //             onPressed: () {
+      //               Navigator.pushNamed(context, '/signup');
+      //             },
+      //             child: Text('Don\'t have an account? Sign up', style: TextStyle(color: Colors.white70, fontSize: 16)),
+      //           ),
+      //         ],
+      //       ),
+      //     ),
+      //   ),
+      // ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blueGrey, Colors.grey],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.fitness_center, color: Colors.white, size: 100),
-                SizedBox(height: 30),
-                TextField(
-                  controller: _usernameController,
-                  style: TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white24,
-                    hintText: 'Username',
-                    hintStyle: TextStyle(color: Colors.white70),
-                    prefixIcon: Icon(Icons.person, color: Colors.white70),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20),
-                TextField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  style: TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white24,
-                    hintText: 'Password',
-                    hintStyle: TextStyle(color: Colors.white70),
-                    prefixIcon: Icon(Icons.lock, color: Colors.white70),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 30),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white24,
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                  onPressed: _login,
-                  child: Text('Login', style: TextStyle(color: Colors.white, fontSize: 18)),
-                ),
-                SizedBox(height: 20),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/signup');
-                  },
-                  child: Text('Don\'t have an account? Sign up', style: TextStyle(color: Colors.white70, fontSize: 16)),
-                ),
-              ],
+  decoration: BoxDecoration(
+    image: DecorationImage(
+      image: AssetImage('background_login.jpg'),
+      fit: BoxFit.cover, // Adjust the image to cover the entire background
+    ),
+  ),
+  child: Center(
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Icon(Icons.fitness_center, color: Colors.white, size: 100),
+          SizedBox(height: 30),
+          TextField(
+            controller: _usernameController,
+            style: TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white24,
+              hintText: 'Username',
+              hintStyle: TextStyle(color: Colors.white70),
+              prefixIcon: Icon(Icons.person, color: Colors.white70),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide.none,
+              ),
             ),
           ),
-        ),
+          SizedBox(height: 20),
+          TextField(
+            controller: _passwordController,
+            obscureText: true,
+            style: TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white24,
+              hintText: 'Password',
+              hintStyle: TextStyle(color: Colors.white70),
+              prefixIcon: Icon(Icons.lock, color: Colors.white70),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide.none,
+              ),
+            ),
+          ),
+          SizedBox(height: 30),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white24,
+              padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+            ),
+            onPressed: _login,
+            child: Text('Login', style: TextStyle(color: Colors.white, fontSize: 18)),
+          ),
+          SizedBox(height: 20),
+          TextButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/signup');
+            },
+            child: Text('Don\'t have an account? Sign up', style: TextStyle(color: Colors.white70, fontSize: 16)),
+          ),
+        ],
       ),
-    );
+    ),
+  ),
+      ),
+);
+    
+    
   }
 }
